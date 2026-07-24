@@ -41,6 +41,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 ],
 callbacks:{
     async signIn({user,account}) {
+        console.log("SIGNIN CALLBACK - user:", user, "account:", account?.provider)
         if(account?.provider=="google"){
             await connectDb()
             let dbUser=await User.findOne({email:user.email})
@@ -54,6 +55,7 @@ callbacks:{
             user.id=dbUser._id.toString()
             user.role=dbUser.role
         }
+         console.log("SIGNIN SUCCESS - final user.id:", user.id)
         return true 
     },
     jwt({token,user,trigger,session}) {

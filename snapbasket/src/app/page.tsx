@@ -24,10 +24,12 @@ q:string
   
   await connectDb()
   const session=await auth()
-  const user=await User.findById(session?.user?.id)
-  if(!user){
+console.log("SESSION DATA:", JSON.stringify(session))
+const user=await User.findById(session?.user?.id)
+console.log("USER FOUND:", user)
+if(!user){
 redirect("/login")
-  }
+}
 const inComplete=!user.mobile || !user.role || (!user.mobile && user.role=="user")
 if(inComplete){
 return <EditRoleMobile/>
