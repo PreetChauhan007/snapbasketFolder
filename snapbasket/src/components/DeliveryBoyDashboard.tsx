@@ -210,7 +210,7 @@ function DeliveryBoyDashboard({earning}:{earning:number}) {
             }
         ]
         return(
-            <div className='flex items-center justify-center min-h-screen bg-linear-to-br from-white to-purple-50 p-6'>
+            <div className='flex items-center justify-center min-h-screen bg-linear-to-br from-white to-purple-50 p-6 pt-20'>
 <div className='max-w-md w-full text-center '>
 <h2 className='text-2xl font-bold text-gray-800'>No Ongoing Deliveries 🏍️ </h2>
 <p className='text-gray-500 mb-5'>Stay Online to receive incoming orders</p>
