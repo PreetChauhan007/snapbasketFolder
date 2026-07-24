@@ -1,7 +1,7 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function middleware(req:NextRequest){
+export async function proxy(req:NextRequest){
 
 const {pathname}=req.nextUrl
 const publicRoutes=["/login","/register","/api/auth","/heroImage"]
@@ -9,7 +9,7 @@ if(publicRoutes.some((path)=>pathname.startsWith(path))){
     return NextResponse.next()
 }
 
-const token=await getToken({req,secret:process.env.AUTH_SECRET})
+const token=await getToken({req,secret:process.env.AUTH_SECRET,secureCookie:true})
 console.log(token)
 console.log(req.url)
  if(!token){
