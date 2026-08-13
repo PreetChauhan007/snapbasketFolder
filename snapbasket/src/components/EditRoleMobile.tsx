@@ -3,16 +3,14 @@ import React, { useEffect, useState } from 'react'
 import {motion} from "motion/react"
 import { ArrowRight, Bike, User, UserCog } from 'lucide-react'
 import axios from 'axios'
-import { redirect } from 'next/navigation'
-import { Router } from 'next/router'
 import { useRouter } from "next/navigation"
 import { useSession } from 'next-auth/react'
 function EditRoleMobile() {
     const [roles,setRoles]=useState([
-         {id:"admin",label:"Admin",icon:UserCog},
         {id:"user",label:"User",icon:User},
-         {id:"deliveryBoy",label:"Delivery Boy",icon:Bike}
+        {id:"deliveryBoy",label:"Delivery Boy",icon:Bike}
     ])
+    const [isAdminCheckComplete,setIsAdminCheckComplete]=useState(false)
     const [selectedRole,setSelectedRole]=useState("")
     const [mobile,setMobile]=useState("")
     const {update}=useSession()
@@ -34,11 +32,16 @@ useEffect(()=>{
 const checkForAdmin=async()=>{
     try {
        const result=await axios.get("/api/check-for-admin") 
-       if(result.data.adminExist){
-        setRoles(prev=>prev.filter(r=>r.id!=="admin"))
+       if(!result.data.adminExist){
+        setRoles(prev=>[
+          {id:"admin",label:"Admin",icon:UserCog},
+          ...prev
+        ])
        }
     } catch (error) {
         console.log(error)
+    } finally {
+        setIsAdminCheckComplete(true)
     }
 }
 checkForAdmin()
@@ -61,7 +64,7 @@ duration:0.6
       >Select Your Role</motion.h1>
 <div className='flex flex-col md:flex-row justify-center items-center gap-6 mt-10'>
 {
-    roles.map((role)=>{
+    isAdminCheckComplete && roles.map((role)=>{
         const Icon=role.icon
         const isSelected=selectedRole==role.id
         return (
