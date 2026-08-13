@@ -5,12 +5,16 @@ import { IGrocery } from '@/models/grocery.model'
 import CategorySlider from './CategorySlider'
 import GroceryItemCard from './GroceryItemCard'
 
+const normalizeCategory=(category:string)=>category.trim().toLowerCase()
+
 function GroceryCatalog({groceryList}:{groceryList:IGrocery[]}) {
   const [selectedCategory,setSelectedCategory]=useState<string | null>(null)
 
   const filteredGroceries=useMemo(
     ()=>selectedCategory
-      ? groceryList.filter((item)=>item.category===selectedCategory)
+      ? groceryList.filter(
+          (item)=>normalizeCategory(item.category)===normalizeCategory(selectedCategory)
+        )
       : groceryList,
     [groceryList,selectedCategory]
   )
