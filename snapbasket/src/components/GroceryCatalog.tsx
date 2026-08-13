@@ -1,22 +1,36 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { IGrocery } from '@/models/grocery.model'
 import CategorySlider from './CategorySlider'
 import GroceryItemCard from './GroceryItemCard'
+import { getSocket } from '@/lib/socket'
 
 const normalizeCategory=(category:string)=>category.trim().toLowerCase()
 
 function GroceryCatalog({groceryList,allGroceryList}:{groceryList:IGrocery[],allGroceryList:IGrocery[]}) {
   const [selectedCategory,setSelectedCategory]=useState<string | null>(null)
+  const [liveGroceries,setLiveGroceries]=useState(allGroceryList)
+
+  useEffect(()=>setLiveGroceries(allGroceryList),[allGroceryList])
+
+  useEffect(()=>{
+    const socket=getSocket()
+    const handleStockUpdate=async()=>{
+      const response=await fetch('/api/admin/get-groceries')
+      if(response.ok) setLiveGroceries(await response.json())
+    }
+    socket.on('stock-update',handleStockUpdate)
+    return ()=>{socket.off('stock-update',handleStockUpdate)}
+  },[])
 
   const filteredGroceries=useMemo(
     ()=>selectedCategory
-      ? allGroceryList.filter(
+      ? liveGroceries.filter(
           (item)=>normalizeCategory(item.category)===normalizeCategory(selectedCategory)
         )
       : groceryList,
-    [groceryList,allGroceryList,selectedCategory]
+    [groceryList,liveGroceries,selectedCategory]
   )
 
   const handleCategorySelect=(category:string)=>{

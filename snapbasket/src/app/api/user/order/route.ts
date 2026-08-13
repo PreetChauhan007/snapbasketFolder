@@ -50,6 +50,7 @@ newOrder=await Order.create({
 
 // Notifications must not hold up a successfully created order or its redirect.
 void emitEventHandler("new-order",newOrder)
+void emitEventHandler("stock-update",{items:stockResult.reserved})
 
 return NextResponse.json(
     newOrder,{status:201}

@@ -3,6 +3,7 @@ import uploadOnCloudinary from "@/lib/cloudinary";
 import connectDb from "@/lib/db";
 import Grocery from "@/models/grocery.model";
 import { NextRequest, NextResponse } from "next/server";
+import emitEventHandler from "@/lib/emitEventHandler";
 
 export async function POST(req:NextRequest) {
     try {
@@ -33,6 +34,7 @@ export async function POST(req:NextRequest) {
           const grocery=await Grocery.create({
             name,price,category,unit,image:imageUrl,stock
           })
+          void emitEventHandler("stock-update",{groceryId:grocery._id.toString(),stock:grocery.stock})
           return NextResponse.json(
             grocery,{status:200}
           )

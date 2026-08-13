@@ -3,6 +3,7 @@ import Order from "@/models/order.model";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { reserveStock } from "@/lib/stock";
+import emitEventHandler from "@/lib/emitEventHandler";
 
 const stripe=new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -29,6 +30,7 @@ if(order && !order.isPaid){
     }
     order.isPaid=true
     await order.save()
+    void emitEventHandler("stock-update",{items:stockResult.reserved})
 }
 }
     
