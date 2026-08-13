@@ -26,8 +26,8 @@ function GroceryCatalog({groceryList}:{groceryList:IGrocery[]}) {
       <h2 className='text-2xl md:text-3xl font-bold text-purple-700 mb-6 text-center'>
         {selectedCategory ? `${selectedCategory} Items` : 'Grocery Items'}
       </h2>
-      {selectedCategory && <button type='button' onClick={()=>setSelectedCategory(null)} className='mb-5 text-sm font-semibold text-purple-700 hover:text-purple-900'>Show all items</button>}
-      {filteredGroceries.length ? (
+      {selectedCategory && filteredGroceries.length > 0 && <button type='button' onClick={()=>setSelectedCategory(null)} className='mb-5 text-sm font-semibold text-purple-700 hover:text-purple-900'>Show all items</button>}
+      {filteredGroceries.length > 0 ? (
         <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6'>
           {filteredGroceries.map((item)=><GroceryItemCard key={item._id?.toString()} item={item as any}/>) }
         </div>
@@ -36,8 +36,8 @@ function GroceryCatalog({groceryList}:{groceryList:IGrocery[]}) {
           <p className='text-xl font-bold text-purple-700'>Items Not Available</p>
           <p className='mt-2 text-gray-600'>
             {selectedCategory
-              ? `${selectedCategory} category mein abhi koi item available nahi hai.`
-              : 'Abhi koi grocery item available nahi hai.'}
+              ? `No items are currently available in the ${selectedCategory} category.`
+              : 'No grocery items are currently available.'}
           </p>
         </div>
       )}
