@@ -7,16 +7,16 @@ import GroceryItemCard from './GroceryItemCard'
 
 const normalizeCategory=(category:string)=>category.trim().toLowerCase()
 
-function GroceryCatalog({groceryList}:{groceryList:IGrocery[]}) {
+function GroceryCatalog({groceryList,allGroceryList}:{groceryList:IGrocery[],allGroceryList:IGrocery[]}) {
   const [selectedCategory,setSelectedCategory]=useState<string | null>(null)
 
   const filteredGroceries=useMemo(
     ()=>selectedCategory
-      ? groceryList.filter(
+      ? allGroceryList.filter(
           (item)=>normalizeCategory(item.category)===normalizeCategory(selectedCategory)
         )
       : groceryList,
-    [groceryList,selectedCategory]
+    [groceryList,allGroceryList,selectedCategory]
   )
 
   const handleCategorySelect=(category:string)=>{

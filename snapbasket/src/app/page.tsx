@@ -39,7 +39,9 @@ const plainUser=JSON.parse(JSON.stringify(user))
 
 
 let groceryList:IGrocery[]=[]
+let allGroceryList:IGrocery[]=[]
 if(user.role==="user"){
+  allGroceryList=await Grocery.find({})
   if(searchParams.q){
     groceryList=await Grocery.find({
      $or:[
@@ -48,7 +50,7 @@ if(user.role==="user"){
      ]
     })
   }else{
-    groceryList=await Grocery.find({})
+    groceryList=allGroceryList
   }
 }
   return (
@@ -56,7 +58,7 @@ if(user.role==="user"){
       <Nav user={plainUser}/>
       <GeoUpdater userId={plainUser._id}/>
       {user.role=="user"?(
-        <UserDashboard groceryList={groceryList}/>
+        <UserDashboard groceryList={groceryList} allGroceryList={allGroceryList}/>
       ):user.role=="admin"?(
         <AdminDashboard/>
       ):<DeliveryBoy/>}
