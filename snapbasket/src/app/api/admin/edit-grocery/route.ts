@@ -21,14 +21,18 @@ export async function POST(req:NextRequest) {
         const category=formData.get("category") as string
          const unit=formData.get("unit") as string
           const price=formData.get("price") as string
+          const stock=Number(formData.get("stock"))
           const file=formData.get("image") as Blob | null 
 
           let imageUrl
           if(file){
             imageUrl=await uploadOnCloudinary(file)
           }
+          if(!Number.isInteger(stock) || stock<0){
+            return NextResponse.json({message:"stock must be a whole number of 0 or more"},{status:400})
+          }
           const grocery=await Grocery.findByIdAndUpdate(groceryId,{
-            name,price,category,unit,image:imageUrl
+            name,price,category,unit,image:imageUrl,stock
           })
           return NextResponse.json(
             grocery,{status:200}

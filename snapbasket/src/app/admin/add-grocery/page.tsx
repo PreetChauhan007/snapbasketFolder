@@ -27,6 +27,7 @@ function AddGrocery() {
    const [category,setCategory]=useState("") 
    const [unit,setUnit]=useState("")
    const [price,setPrice]=useState("")
+   const [stock,setStock]=useState(0)
    const [loading,setLoading]=useState(false)
    const [preview,setPreview]=useState<string | null>()
    const [backendImage,setBackendImage]=useState<File | null>()
@@ -46,6 +47,7 @@ const handleSubmit=async (e:FormEvent)=>{
     formData.append("name",name)
 formData.append("category",category)
 formData.append("price",price)
+formData.append("stock",stock.toString())
     formData.append("unit",unit)
     if(backendImage){
 formData.append("image",backendImage)
@@ -116,6 +118,10 @@ className='bg-white w-full max-w-2xl shadow-2xl rounded-3xl border border-purple
         onChange={(e)=>setPrice(e.target.value)}
         value={price}
         />
+    </div>
+    <div>
+        <label htmlFor="stock" className='block text-gray-700 font-medium mb-1'>Available Quantity<span className='text-red-500'>*</span></label>
+        <input type="number" id="stock" min="0" step="1" value={stock} onChange={(e)=>setStock(Number(e.target.value))} className='w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-400 transition-all'/>
     </div>
     <div className='flex flex-col items-center gap-5 sm:flex-row'>
         <label htmlFor="image" className='cursor-pointer flex items-center justify-center gap-2 bg-purple-50 text-purple-700 font-semibold border border-purple-200 rounded-xl px-6 py-3 hover:bg-green-100 transition-all w-full sm:w-auto'><Upload className='w-5 h-5'/>Upload Image</label>

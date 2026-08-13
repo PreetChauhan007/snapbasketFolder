@@ -70,6 +70,7 @@ const handleEdit=async()=>{
     formData.append("name",editing?.name)
 formData.append("category",editing.category)
 formData.append("price",editing.price)
+formData.append("stock",editing.stock.toString())
     formData.append("unit",editing.unit)
     if(backendImage){
 formData.append("image",backendImage)
@@ -157,6 +158,7 @@ className='object-contain hover:scale-110 transition-transform duration-500'
     <div>
 <h3 className='font-semibold text-gray-800 text-lg truncate'>{g.name}</h3>
 <p className='text-gray-500 text-sm capitalize'>{g.category}</p>
+<p className={`text-sm font-semibold mt-1 ${(g.stock ?? 0)>0 ? 'text-green-600' : 'text-red-600'}`}>{(g.stock ?? 0)>0 ? `${g.stock} in stock` : 'Out of stock'}</p>
     </div>
     <div className='mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2'>
         <p className='text-purple-700 font-bold text-lg'>
@@ -213,6 +215,7 @@ className='object-contain'
     onChange={(e)=>setEditing({...editing,name:e.target.value})}
     className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none'
     />
+    <input type="number" min="0" step="1" placeholder="Available Quantity" value={editing.stock ?? 0} onChange={(e)=>setEditing({...editing,stock:Number(e.target.value)})} className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none'/>
 
     <select className='w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none bg-white'
     value={editing.category}

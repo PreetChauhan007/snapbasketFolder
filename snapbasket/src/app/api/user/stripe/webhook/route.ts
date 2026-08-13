@@ -2,6 +2,7 @@ import connectDb from "@/lib/db";
 import Order from "@/models/order.model";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { reserveStock } from "@/lib/stock";
 
 const stripe=new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -20,9 +21,15 @@ try {
 if(event?.type==="checkout.session.completed"){
 const session=event.data.object
 await connectDb()
-await Order.findByIdAndUpdate(session.metadata?.orderId,{
-    isPaid:true
-})
+const order=await Order.findById(session.metadata?.orderId)
+if(order && !order.isPaid){
+    const stockResult=await reserveStock(order.items.map((item:{grocery:{toString:()=>string},quantity:number})=>({grocery:item.grocery.toString(),quantity:item.quantity})))
+    if(!stockResult.success){
+        return NextResponse.json({message:stockResult.message},{status:409})
+    }
+    order.isPaid=true
+    await order.save()
+}
 }
     
 return NextResponse.json({recieved:true},{status:200})

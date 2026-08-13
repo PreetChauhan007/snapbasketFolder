@@ -13,6 +13,7 @@ interface IGrocery{
     price:string,
     unit:string,
     image:string,
+    stock:number,
     createdAt?:Date,
     updatedAt?:Date
 }
@@ -22,6 +23,7 @@ function GroceryItemCard({item}:{item:IGrocery}) {
 
 const {cartData}=useSelector((state:RootState)=>state.cart)
 const cartItem=cartData.find(i=>i._id==item._id)
+const isOutOfStock=(item.stock ?? 0)<=0
 
   return (
     <motion.div
@@ -44,7 +46,7 @@ const cartItem=cartData.find(i=>i._id==item._id)
   <span className="text-purple-700 font-bold text-lg">₹{item.price}</span>
 </div>
 
-{!cartItem ? <motion.button className="mt-4 flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full py-2 text-sm font-medium transition-all"
+ {isOutOfStock ? <p className="mt-4 text-center rounded-full bg-red-50 py-2 text-sm font-semibold text-red-600">Out of Stock</p> : !cartItem ? <motion.button className="mt-4 flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full py-2 text-sm font-medium transition-all"
 whileTap={{scale:0.96}}
 onClick={()=>dispatch(addToCart({...item,quantity:1}))}
 >
@@ -59,7 +61,7 @@ className="mt-4 flex items-center justify-center bg-purple-50 border border-purp
 >
 <button className="w-7 h-7 flex items-center justify-center rounded-full bg-purple-100 hover:bg-purple-200 transition-all" onClick={()=>dispatch(decreaseQuantity(item._id))}><Minus size={16} className="text-purple-700"/></button>
 <span className="text-sm font-semibold text-gray-800">{cartItem.quantity}</span>
-<button className="w-7 h-7 flex items-center justify-center rounded-full bg-purple-100 hover:bg-purple-200 transition-all" onClick={()=>dispatch(increaseQuantity(item._id))}><Plus size={16} className="text-purple-700"/></button>
+<button disabled={cartItem.quantity>=item.stock} className="w-7 h-7 flex items-center justify-center rounded-full bg-purple-100 hover:bg-purple-200 disabled:opacity-40 transition-all" onClick={()=>dispatch(increaseQuantity(item._id))}><Plus size={16} className="text-purple-700"/></button>
 
 
   </motion.div>}

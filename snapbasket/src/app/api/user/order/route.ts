@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import emitEventHandler from "@/lib/emitEventHandler";
 import Order from "@/models/order.model";
 import User from "@/models/user.models";
+import { reserveStock, restoreStock } from "@/lib/stock";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req:NextRequest) {
@@ -28,13 +29,24 @@ export async function POST(req:NextRequest) {
             )
         }
 
-const newOrder=await Order.create({
+const stockResult=await reserveStock(items)
+if(!stockResult.success){
+    return NextResponse.json({message:stockResult.message},{status:409})
+}
+
+let newOrder
+try {
+newOrder=await Order.create({
     user:userId,
     items,
     paymentMethod,
     totalAmount,
     address
 })
+} catch (error) {
+    await restoreStock(stockResult.reserved || [])
+    throw error
+}
 
 // Notifications must not hold up a successfully created order or its redirect.
 void emitEventHandler("new-order",newOrder)
