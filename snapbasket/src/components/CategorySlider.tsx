@@ -2,6 +2,7 @@
 import { Apple, Baby, Box, ChevronLeft, ChevronRight, Coffee, Cookie, Flame, Home,  Milk, Plug, Popcorn, Wheat } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import {motion} from "motion/react"
+import Link from 'next/link'
 function CategorySlider() {
     const categories=[
        {id:1,name:"Fruits & Veggies",icon:Apple,color:"bg-green-100"},
@@ -69,15 +70,17 @@ useEffect(()=>{
 
 {categories.map((cat)=>{
 const Icon=cat.icon
- return <motion.div
+ return <Link
  key={cat.id}
+ href={`/?category=${encodeURIComponent(cat.name)}`}
+ aria-label={`Shop ${cat.name}`}
  className={`min-w-37.5 md:min-w-45  flex flex-col items-center justify-center rounded-2xl  ${cat.color} shadow:md hover:shadow-xl transition-all cursor-pointer`}
  >
 <div className='flex flex-col items-center justify-center p-5'>
 <Icon className='w-10 h-10 text-purple-700 mb-3'/>
 <p className='text-center text-sm md:text-base font-semibold text-gray-700'>{cat.name}</p>
 </div>
- </motion.div>
+ </Link>
 }
 )}
      </div>

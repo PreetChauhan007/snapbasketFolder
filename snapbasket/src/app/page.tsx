@@ -15,7 +15,8 @@ import { redirect } from 'next/navigation'
 
 async function Home(props:{
   searchParams:Promise<{
-q:string
+q?:string
+category?:string
   }>
 }) {
 
@@ -40,7 +41,9 @@ const plainUser=JSON.parse(JSON.stringify(user))
 
 let groceryList:IGrocery[]=[]
 if(user.role==="user"){
-  if(searchParams.q){
+  if(searchParams.category){
+    groceryList=await Grocery.find({category:searchParams.category})
+  }else if(searchParams.q){
     groceryList=await Grocery.find({
      $or:[
       {name: {$regex: searchParams?.q || "", $options: "i"}},
@@ -66,4 +69,3 @@ if(user.role==="user"){
 }
 
 export default Home
-
